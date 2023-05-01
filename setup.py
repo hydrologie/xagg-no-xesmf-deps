@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
-	name="xagg",
+	name="xagg-no-xesmf-deps",
     version="0.3.0.2",
     author="Kevin Schwarzwald",
     author_email="kschwarzwald@iri.columbia.edu",
