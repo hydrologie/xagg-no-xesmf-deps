@@ -28,9 +28,7 @@ setup(
         'netcdf4',
         'geopandas',
         'shapely',
-	'tables',
-        'xesmf>=0.5.2',
+	    'tables',
         'cf_xarray>=0.5.1',
-        'esmpy>=8.1.0',
 	 ],
 )

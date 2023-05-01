@@ -6,74 +6,8 @@ import geopandas as gpd
 from geopandas import testing as gpdt
 from unittest import TestCase
 from shapely.geometry import Polygon
-import xesmf as xe
 
-from xagg.core import (process_weights,create_raster_polygons,get_pixel_overlaps,aggregate)
-
-
-##### process_weights() tests #####
-def test_process_weights_null():
-	# (by default, process_weights has weights==None, which should 
-	# return the original ds, and weights_info = 'nowghts')
-	ds = xr.Dataset(coords={'lat':(['lat'],np.array([0,1])),
-							'lon':(['lon'],np.array([0,1])),
-							})
-	ds_t,weights_info = process_weights(ds)
-
-	assert weights_info == 'nowghts'
-	xr.testing.assert_allclose(ds,ds_t) # Check that the ds was untouched
-
-def test_process_weights_basic():
-	# Now, test with a weights array the same size as the ds (so, 
-	# no regridding)
-	ds = xr.Dataset(coords={'lat':(['lat'],np.array([0,1])),
-							'lon':(['lon'],np.array([0,1]))})
-
-	weights = xr.DataArray(data=np.array([[0,1],[2,3]]),
-							dims=['lat','lon'],
-							coords=[ds.lat,ds.lon])
-
-	#rgrd = xe.Regridder(ds,weights,'bilinear')
-
-	ds_t,weights_info = process_weights(ds,weights=weights)
-
-	ds_compare = xr.Dataset({'weights':(('lat','lon'),np.array([[0,1],[2,3]]))},
-							coords={'lat':(['lat'],np.array([0,1])),
-									'lon':(['lon'],np.array([0,1])),
-							})
-
-	# Check if weights were correctly added to ds
-	xr.testing.assert_allclose(ds_compare,ds_t)
-	# (weights_info isn't currently used by anything)
-
-def test_process_weights_regrid_weights():
-	# Now, test with a weights array twice the resolution as the
-	# ds, so it needs to be regridded
-	ds = xr.Dataset(coords={'lat':(['lat'],np.array([0,1])),
-							'lon':(['lon'],np.array([0,1])),
-							})
-
-	# Synthetic weights grid, with double the resolution, and shifted
-	# by a half degree. Should regrid to the same weights grid as above
-	weights = xr.DataArray(data=np.array([[-0.5,0.5,0.5,1.5],
-										  [0.5,-0.5,1.5,0.5],
-										  [1.5,2.5,2.5,3.5],
-										  [2.5,1.5,3.5,2.5]]),
-							dims=['lat','lon'],
-							coords=[np.array([-0.25,0.25,0.75,1.25]),
-									np.array([-0.25,0.25,0.75,1.25])])
-
-	ds_t,weights_info = process_weights(ds,weights=weights)
-
-	ds_compare = xr.Dataset({'weights':(('lat','lon'),np.array([[0,1],[2,3]]))},
-							coords={'lat':(['lat'],np.array([0,1])),
-									'lon':(['lon'],np.array([0,1])),
-							})
-
-	# Check if weights were correctly added to ds
-	xr.testing.assert_allclose(ds_compare,ds_t)
-	
-
+from xagg.core import (create_raster_polygons,get_pixel_overlaps,aggregate)
 
 
 ##### create_raster_polygons() tests #####
