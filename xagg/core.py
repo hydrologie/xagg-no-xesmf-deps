@@ -82,90 +82,90 @@ def read_wm(path):
     return wm
 
 
-# def process_weights(ds,weights=None,target='ds'):
-#     """ Process weights - including regridding
+def process_weights(ds,weights=None,target='ds'):
+    """ Process weights - including regridding
     
-#     If ``target == 'ds'``, regrid `weights` to `ds`. If ``target == 'weights'``,
-#     regrid `ds` to `weights`. 
+    If ``target == 'ds'``, regrid `weights` to `ds`. If ``target == 'weights'``,
+    regrid `ds` to `weights`. 
 
-#     Parameters
-#     ---------------
-#     ds : :class:`xarray.Dataset`, :class:`xarray.DataArray`
-#         an :class:`xarray.Dataset`/:class:`xarray.DataArray` to regrid
+    Parameters
+    ---------------
+    ds : :class:`xarray.Dataset`, :class:`xarray.DataArray`
+        an :class:`xarray.Dataset`/:class:`xarray.DataArray` to regrid
     
-#     weights : :class:`xarray.DataArray`, optional, default = ``None``
-#         an :class:`xarray.DataArray` containing a weight (numeric) 
-#         at each location
+    weights : :class:`xarray.DataArray`, optional, default = ``None``
+        an :class:`xarray.DataArray` containing a weight (numeric) 
+        at each location
     
-#     target : str, optional, default = ``'ds'``
-#         whether weights should be regridded to the `ds` grid (by
-#         default) or vice-versa (not yet supported, returns 
-#         `NotImplementedError`)
+    target : str, optional, default = ``'ds'``
+        whether weights should be regridded to the `ds` grid (by
+        default) or vice-versa (not yet supported, returns 
+        `NotImplementedError`)
 
 
-#     Returns
-#     ---------------
-#     ds : :class:`xarray.Dataset`, :class:`xarray.DataArrays`
-#         the input :class:`xarray.Dataset`/:class:`xarray.DataArray`, with a new variable 
-#         `weights` specifying weights for each pixel
+    Returns
+    ---------------
+    ds : :class:`xarray.Dataset`, :class:`xarray.DataArrays`
+        the input :class:`xarray.Dataset`/:class:`xarray.DataArray`, with a new variable 
+        `weights` specifying weights for each pixel
 
-#     weights_info : dict 
-#         a dictionary storing information about the 
-#         weights regridding process, with the fields:
+    weights_info : dict 
+        a dictionary storing information about the 
+        weights regridding process, with the fields:
 
-#         - ``target``: showing which of the two grids was retained
-#         - ``ds_grid``: a dictionary with the grid ``{"lat":ds.lat,"lon",ds.lon}``
-#         - ``weights_grid``: a dictionary with the grid ``{"lat":weights.lat,"lon":weights.lon}``
-#     """
+        - ``target``: showing which of the two grids was retained
+        - ``ds_grid``: a dictionary with the grid ``{"lat":ds.lat,"lon",ds.lon}``
+        - ``weights_grid``: a dictionary with the grid ``{"lat":weights.lat,"lon":weights.lon}``
+    """
     
-#     if weights is None:
-#         # (for robustness against running this without an extra if statement
-#         # in a wrapper function)
-#         weights_info = 'nowghts'
-#     else:
-#         # Check types
-#         if type(weights) is not xr.core.dataarray.DataArray:
-#             raise TypeError('[weights] must be an xarray DataArray.')
-#         if type(ds) not in [xr.core.dataarray.DataArray,
-#                                 xr.core.dataset.Dataset]:
-#             raise TypeError('[ds] must be an xarray structure (DataArray or Dataset)')
+    if weights is None:
+        # (for robustness against running this without an extra if statement
+        # in a wrapper function)
+        weights_info = 'nowghts'
+    else:
+        # Check types
+        if type(weights) is not xr.core.dataarray.DataArray:
+            raise TypeError('[weights] must be an xarray DataArray.')
+        if type(ds) not in [xr.core.dataarray.DataArray,
+                                xr.core.dataset.Dataset]:
+            raise TypeError('[ds] must be an xarray structure (DataArray or Dataset)')
             
-#         # Stick weights into the same supported input format as ds
-#         weights = fix_ds(weights)
+        # Stick weights into the same supported input format as ds
+        weights = fix_ds(weights)
         
-#         # Set regridding info
-#         weights_info = {'target':target,
-#                         'ds_grid':{'lat':ds.lat,'lon':ds.lon},
-#                         'weights_grid':{'lat':weights.lat,'lon':weights.lon}}
+        # Set regridding info
+        weights_info = {'target':target,
+                        'ds_grid':{'lat':ds.lat,'lon':ds.lon},
+                        'weights_grid':{'lat':weights.lat,'lon':weights.lon}}
 
-#         # Regrid, if necessary (do nothing if the grids match up to within
-#         # floating-point precision)
-#         if ((not ((ds.sizes['lat'] == weights.sizes['lat']) & (ds.sizes['lon'] == weights.sizes['lon']))) or 
-#             (not (np.allclose(ds.lat,weights.lat) & np.allclose(ds.lon,weights.lon)))):
-#             if target == 'ds':
-#                 print('regridding weights to data grid...')
-#                 # Create regridder to the [ds] coordinates
-#                 rgrd = xe.Regridder(weights,ds,'bilinear')
-#                 # Regrid [weights] to [ds] grids
-#                 weights = rgrd(weights)
+        # Regrid, if necessary (do nothing if the grids match up to within
+        # floating-point precision)
+        # if ((not ((ds.sizes['lat'] == weights.sizes['lat']) & (ds.sizes['lon'] == weights.sizes['lon']))) or 
+        #     (not (np.allclose(ds.lat,weights.lat) & np.allclose(ds.lon,weights.lon)))):
+        #     if target == 'ds':
+        #         print('regridding weights to data grid...')
+        #         # Create regridder to the [ds] coordinates
+        #         rgrd = xe.Regridder(weights,ds,'bilinear')
+        #         # Regrid [weights] to [ds] grids
+        #         weights = rgrd(weights)
 
-#             elif target == 'weights':
-#                 raise NotImplementedError('The '+target+' variable is not *yet* supported as a target for regridding. Please choose "ds" for now.')
-#                 # This is because of lack of downstream capability right now... 
-#                 print('regridding data to weights grid...')
-#                 # Create regridder to the [weights] coordinates
-#                 rgrd = xe.Regridder(ds,weights,'bilinear')
-#                 # Regrid [ds] to [weights] grid
-#                 ds = rgrd(ds)
+        #     elif target == 'weights':
+        #         raise NotImplementedError('The '+target+' variable is not *yet* supported as a target for regridding. Please choose "ds" for now.')
+        #         # This is because of lack of downstream capability right now... 
+        #         print('regridding data to weights grid...')
+        #         # Create regridder to the [weights] coordinates
+        #         rgrd = xe.Regridder(ds,weights,'bilinear')
+        #         # Regrid [ds] to [weights] grid
+        #         ds = rgrd(ds)
 
-#             else:
-#                 raise KeyError(target+' is not a supported target for regridding. Choose "weights" or "ds".')
+        #     else:
+        #         raise KeyError(target+' is not a supported target for regridding. Choose "weights" or "ds".')
             
-#         # Add weights to ds
-#         ds['weights'] = weights
+        # Add weights to ds
+        ds['weights'] = weights
             
-#     # Return
-#     return ds,weights_info
+    # Return
+    return ds,weights_info
 
 
 def create_raster_polygons(ds,
