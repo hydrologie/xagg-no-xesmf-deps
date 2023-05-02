@@ -8,8 +8,8 @@ from geopandas import testing as gpdt
 from unittest import TestCase
 from shapely.geometry import Polygon
 
-from xagg.core import (create_raster_polygons,get_pixel_overlaps,aggregate,read_wm)
-from xagg.wrappers import (pixel_overlaps)
+from xagg_no_xesmf_deps.core import (create_raster_polygons,get_pixel_overlaps,aggregate,read_wm)
+from xagg_no_xesmf_deps.wrappers import (pixel_overlaps)
 
 
 ##### to_dataset() tests #####

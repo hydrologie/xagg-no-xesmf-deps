@@ -8,7 +8,7 @@ from geopandas import testing as gpdt
 from unittest import TestCase
 from shapely.geometry import Polygon
 
-from xagg.wrappers import (pixel_overlaps)
+from xagg_no_xesmf_deps.wrappers import (pixel_overlaps)
 
 
 ##### pixel_overlaps() tests #####

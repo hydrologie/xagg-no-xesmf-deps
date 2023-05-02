@@ -7,7 +7,7 @@ from geopandas import testing as gpdt
 from unittest import TestCase
 from shapely.geometry import Polygon
 
-from xagg.core import (process_weights,create_raster_polygons,get_pixel_overlaps,aggregate)
+from xagg_no_xesmf_deps.core import (process_weights,create_raster_polygons,get_pixel_overlaps,aggregate)
 
 
 ##### create_raster_polygons() tests #####

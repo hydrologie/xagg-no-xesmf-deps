@@ -5,8 +5,8 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
-	name="xagg-no-xesmf-deps",
-    version="0.3.0.2",
+	name="xagg_no_xesmf_deps",
+    version="0.3.0.3",
     author="Kevin Schwarzwald",
     author_email="kschwarzwald@iri.columbia.edu",
     description="Aggregating raster data over polygons",
